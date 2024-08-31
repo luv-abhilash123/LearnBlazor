@@ -1,32 +1,24 @@
 ﻿@page "/learnBlazor/demoProduct"
 <h2 class="text-primary">DemoProduct</h2>
+<p>Favourite Count : @FavouriteCount</p>
+<p>Selected Product : @SelectedProduct</p>
 <div class="border p-2 mt-2 bg-secondary">
     <div class="row">
-        @foreach(var prod in ProductList)
+         @foreach (var prod in ProductList)
         {
-            <div class="bg-light border m-1 col-5">
-                <h4 class="text-secondary">Product - @prod.Id</h4>
-                Name - @prod.Name<br/>
-                Show Properties : 
-                <input type="checkbox" @bind="prod.IsActive" />
-                @if (prod.IsActive)
-                {
-                    @foreach(var prodProp in prod.ProductProperties)
-                    {
-                      <p>@prodProp.Key - @prodProp.Value</p>
-                    }
-                }<br />
-                <input type="button" class="btn btn-danger" style="width:100px" value="Delete" /><br />
-            </div>
+            <_IndividualProduct product="prod" OnFavoriteUpdated="FavouriteCountChange" OnSelectedProductChange="UpdateSelectedProduct"></_IndividualProduct>
         }
-
     </div>
+
 </div>
 
 
 
 @code {
-   
+    public int Count { get; set; } = 0;
+    public int FavouriteCount { get; set; } = 0;
+    public string SelectedProduct { get; set; }
+
     List<Product> ProductList = new();
 
     protected override void OnInitialized()
@@ -36,6 +28,7 @@
                 Id = 1,
                 Name = "Midnight Blaze",
                 IsActive = false,
+                Price=5.0,
                 ProductProperties = new List<Product_Prop>()
                 {
                 new Product_Prop { Id = 1, Key = "Flavor", Value = "Rose"},
@@ -49,6 +42,7 @@
                 Id = 2,
                 Name = "Blossom Lily",
                 IsActive = true,
+                Price=6,
                 ProductProperties = new List<Product_Prop>()
                 {
                     new Product_Prop { Id = 1, Key = "Flavor", Value = "Lily" },
@@ -58,4 +52,23 @@
             });
         base.OnInitialized();
     }
+
+
+    protected void FavouriteCountChange(bool isSelected)
+    {
+        if(isSelected)
+        {
+            FavouriteCount++;
+        }
+        else
+        {
+            FavouriteCount--;
+        }
+    }
+
+    protected void UpdateSelectedProduct(string productName)
+    {
+        SelectedProduct = productName;
+    }
+
 }
